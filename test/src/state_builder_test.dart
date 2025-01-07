@@ -26,7 +26,7 @@ void main() {
       testWidgets('when initially built', (tester) async {
         await tester.pumpWidget(
           MaterialApp(
-            home: StateBuilder(
+            home: StateBuilder<String>(
               stateManager: manager,
               builder: (context, state) => Text(state),
             ),
@@ -39,7 +39,7 @@ void main() {
       testWidgets('when state changes', (tester) async {
         await tester.pumpWidget(
           MaterialApp(
-            home: StateBuilder(
+            home: StateBuilder<String>(
               stateManager: manager,
               builder: (context, state) => Text(state),
             ),
@@ -57,7 +57,7 @@ void main() {
       testWidgets('when state changes', (tester) async {
         await tester.pumpWidget(
           MaterialApp(
-            home: StateBuilder(
+            home: StateBuilder<String>(
               stateManager: manager,
               builder: (context, state) => Text(state),
             ),
@@ -78,7 +78,7 @@ void main() {
 
         await tester.pumpWidget(
           MaterialApp(
-            home: StateBuilder(
+            home: StateBuilder<String>(
               stateManager: manager,
               builder: (context, state) {
                 capturedState = state;

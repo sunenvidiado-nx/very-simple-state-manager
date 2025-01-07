@@ -46,7 +46,7 @@ class StateBuilder<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
+    return ValueListenableBuilder<T>(
       valueListenable: stateManager.notifier,
       builder: (context, value, _) => builder(context, value),
     );
