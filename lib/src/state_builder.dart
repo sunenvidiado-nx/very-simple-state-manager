@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../simple_state_manager.dart';
+import '../very_simple_state_manager.dart';
 
 /// {@template state_builder}
 ///

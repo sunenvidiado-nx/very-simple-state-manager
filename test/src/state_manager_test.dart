@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:very_simple_state_manager/simple_state_manager.dart';
+import 'package:very_simple_state_manager/very_simple_state_manager.dart';
 
 class TestStateManager extends StateManager<int> {
   TestStateManager() : super(0);

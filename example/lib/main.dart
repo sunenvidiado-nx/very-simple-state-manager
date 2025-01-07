@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:very_simple_state_manager/simple_state_manager.dart';
+import 'package:very_simple_state_manager/very_simple_state_manager.dart';
 
 /// Manages the counter state for the app
 class CounterManager extends StateManager<int> {

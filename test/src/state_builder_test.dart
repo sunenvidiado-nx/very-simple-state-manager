@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:very_simple_state_manager/simple_state_manager.dart';
+import 'package:very_simple_state_manager/very_simple_state_manager.dart';
 
 class _TestStateManager extends StateManager<String> {
   _TestStateManager() : super('initial');
