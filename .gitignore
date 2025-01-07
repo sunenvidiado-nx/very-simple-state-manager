@@ -34,6 +34,7 @@ migrate_working_dir/
 /build/
 **/*.*.dart
 **/generated_plugin_registrant.dart
+**/*.packages
 
 # Symbolication related
 app.*.symbols
