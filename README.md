@@ -3,25 +3,28 @@
 [![Tests](https://github.com/sunenvidiado-nx/very-simple-state-manager/actions/workflows/test.yaml/badge.svg)](https://github.com/sunenvidiado-nx/very-simple-state-manager/actions/workflows/test.yaml)
 [![codecov](https://codecov.io/gh/sunenvidiado-nx/very-simple-state-manager/branch/main/graph/badge.svg)](https://codecov.io/gh/sunenvidiado-nx/very-simple-state-manager)
 
-Tired of complex state management solutions? Say hello to a very simple state manager! 🙌
+Yeah, I know - another state management solution. But this one? It's refreshingly simple! 🌟
 
-This lightweight package makes Flutter state management a breeze, built on top of Flutter's own `ValueNotifier` and `ValueListenableBuilder`. No magic, no complexity - just simple, effective state management that gets the job done.
+A lightweight state management solution built on Flutter's core concepts. Taking inspiration from BLoC's structured approach and ChangeNotifier's simplicity, it provides a clean, effective API without unnecessary complexity.
 
 ## ✨ Features
 
-- 🎯 **Keep It Simple**: Super easy to learn and use - you'll be up and running in minutes!
-- 🔄 **Auto-Magic UI Updates**: Your UI stays in sync with your state - no extra code needed
-- 🎨 **Clean & Tidy**: Keep your state logic separate from your UI - your future self will thank you
-- 🚀 **Fast & Efficient**: Built on Flutter's `ValueNotifier` for speedy updates
-- 📦 **Zero Bloat**: No external dependencies - just pure Flutter goodness
+- **Simplicity**: Designed for quick adoption and ease of use
+- **Reactive Updates**: Automatic UI synchronization with state changes
+- **Clean Architecture**: Clear separation between state logic and UI
+- **Performance**: Leverages Flutter's efficient `ValueNotifier` system
+- **Lightweight**: Zero external dependencies
 
 ## 🔍 Under the Hood
 
-We've built Simple State Manager on two awesome Flutter concepts:
+Why reinvent the wheel when Flutter already provides great building blocks? We take Flutter's built-in state management concepts and wrap them in a developer-friendly API:
+
 - `ValueNotifier`: Think of it as a smart box that tells everyone when its contents change
 - `ValueListenableBuilder`: The messenger that tells your UI when to update
 
-We've wrapped these up in a friendly API that makes state management feel like a walk in the park! 
+Instead of using these directly, we wrap them in two intuitive classes:
+- `StateManager`: A clean wrapper around `ValueNotifier` that makes state updates a breeze
+- `StateBuilder`: A smarter version of `ValueListenableBuilder` that makes UI updates dead simple
 
 ## 🚀 Getting Started
 
@@ -35,21 +38,21 @@ flutter pub add very_simple_state_manager
 
 ### 1. Create Your State Manager
 
-Here's how easy it is to create a counter:
+Create a counter with just a few lines of code:
 
 ```dart
 class CounterManager extends StateManager<int> {
-  CounterManager() : super(0); // Start at zero!
+  CounterManager() : super(0);
 
   void increment() {
-    state = state + 1; // Simple as that!
+    state = state + 1;
   }
 }
 ```
 
 ### 2. Use It In Your UI
 
-Wrap your widgets with `StateBuilder` and watch the magic happen:
+Connect your state to the UI with `StateBuilder`:
 
 ```dart
 class CounterWidget extends StatefulWidget {
@@ -68,63 +71,70 @@ class _CounterWidgetState extends State<CounterWidget> {
 
   @override
   void dispose() {
-    _counter.dispose(); // Clean up after yourself! 🧹
+    _counter.dispose(); // Don't forget to dispose state managers 🧹
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        StateBuilder(
-          stateManager: _counter,
-          builder: (context, count) => Text('Count: $count'),
+    return Scaffold(
+      body: StateBuilder(
+        stateManager: _counter,
+        builder: (context, count) => Center(
+          child: Text('Count: $count'),
         ),
-        ElevatedButton(
-          onPressed: _counter.increment,
-          child: Text('Increment'),
-        ),
-      ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _counter.increment,
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
 ```
 
-### 3. Level Up! 🎮
+### 3. Simple Yet Powerful 💪
 
-Want to manage something more complex? We've got you covered:
+Handle complex state management with clean, maintainable code:
 
 ```dart
-class UserManager extends StateManager<User> {
-  UserManager() : super(User.empty());
+class UserManager extends StateManager<UserState> {
+  UserManager(this._repository) : super(InitialUserState());
+
+  final UserRepository _repository;
 
   Future<void> loadUser(String id) async {
-    // Fetch that user data!
-    final user = await api.getUser(id);
-    state = user;
+    state = LoadingUserState();
+
+    try {
+      final user = await _repository.getUserById(id);
+      state = LoadedUserState(user);
+    } on Exception catch (e) {
+      state = ErrorUserState(e);
+    }
   }
 
   void updateName(String newName) {
-    state = state.copyWith(name: newName);
+    state = LoadedUserState(state.user.copyWith(name: newName));
   }
 }
 ```
 
-## 💡 Pro Tips
+## 💡 Best Practices
 
-1. **Clean Up**: Always dispose your state managers - keep your app running smooth! 
-2. **Stay Focused**: One state manager, one job - keep it simple!
-3. **Keep It Immutable**: Treat your state like a precious gem - don't modify it directly
-4. **Type It Out**: Use specific types instead of dynamic - your IDE will love you for it
+1. **Resource Management**: Always dispose state managers to prevent memory leaks
+2. **Single Responsibility**: Each state manager should handle one logical unit of state
+3. **Immutability**: Treat state as immutable to prevent unintended side effects
+4. **Type Safety**: Leverage Dart's type system for better maintainability
 
-## 🎮 Try It Out
+## 🎯 Examples
 
-Want to see it in action? Check out the `/example` directory for a cool counter app demo!
+Check out the `/example` directory for practical demonstrations and usage patterns.
 
 ## 🤝 Contributing
 
-Found a bug? Have a cool idea? We'd love to hear from you! Feel free to open an issue or send a PR.
+We welcome contributions! Feel free to submit issues and pull requests.
 
 ## 📄 License
 
-This project is licensed under the BSD 3-Clause License - check out the [LICENSE](LICENSE) file for the legal stuff.
+Licensed under the BSD 3-Clause License - see the [LICENSE](LICENSE) file for details.
