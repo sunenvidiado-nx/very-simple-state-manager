@@ -1,0 +1,16 @@
+name: very_simple_state_manager
+description: A simple state manager for Flutter.
+version: 1.0.0
+repository: https://github.com/sunenvidiado-nx/simple-state-manager
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^5.0.0

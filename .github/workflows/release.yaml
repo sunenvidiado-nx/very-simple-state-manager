@@ -1,0 +1,50 @@
+name: Create release
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read latest version from CHANGELOG
+        id: changelog
+        shell: bash
+        run: |
+          LATEST_VERSION=$(grep -m1 "^## \[" CHANGELOG.md | sed -E 's/## \[(.*)\].*/\1/')
+          if [ -z "$LATEST_VERSION" ]; then
+            echo "No version found in CHANGELOG.md"
+            exit 1
+          fi
+
+          # Extract content between the current and the next version or until the end of the file
+          CHANGELOG_CONTENT=$(awk "/^## \[$LATEST_VERSION\]/ {flag=1; next} /^## \[/ {flag=0} flag {print}" CHANGELOG.md)
+
+          if [ -z "$CHANGELOG_CONTENT" ]; then
+            echo "No changelog content found for version $LATEST_VERSION"
+            exit 1
+          fi
+
+          echo "version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+          echo 'content<<EOF' >> $GITHUB_OUTPUT
+          echo "$CHANGELOG_CONTENT" >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1.14.0
+        with:
+          prerelease: false
+          tag: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            ${{ steps.changelog.outputs.content }}

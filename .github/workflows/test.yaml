@@ -1,0 +1,42 @@
+name: Run tests
+
+on:
+  push:
+    branches-ignore:
+      - "v*"
+    tags-ignore:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  verification:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.27.1 # Must be the same with the one in pubspec.yaml
+
+      - name: Download dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze --no-pub
+
+      - name: Format
+        run: dart format --set-exit-if-changed .
+
+      - name: Run tests with coverage
+        run: flutter test --coverage --test-randomize-ordering-seed random
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: coverage/lcov.info
+          fail_ci_if_error: true
