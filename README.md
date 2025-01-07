@@ -25,17 +25,10 @@ We've wrapped these up in a friendly API that makes state management feel like a
 
 ## 🚀 Getting Started
 
-Add this to your `pubspec.yaml` (it's easier than making toast!):
-
-```yaml
-dependencies:
-  very_simple_state_manager: ^1.0.0
-```
-
-Then run:
+Add the package to your Flutter project:
 
 ```bash
-flutter pub get
+flutter pub add very_simple_state_manager
 ```
 
 ## 📖 Usage
