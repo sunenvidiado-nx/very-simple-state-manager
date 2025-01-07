@@ -1,4 +1,5 @@
-name: Create release
+name: Publish and create release
+
 on:
   workflow_dispatch:
   push:
@@ -8,25 +9,9 @@ on:
 jobs:
   publish:
     name: Publish to pub.dev
-    runs-on: ubuntu-latest
     permissions:
-      id-token: write # Required for authentication to pub.dev
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: 3.10.0 # Match version from test workflow
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Set up pub.dev credentials
-        uses: flutter-actions/setup-pubdev-credentials@v1
-
-      - name: Publish to pub.dev
-        run: flutter pub publish --force # --force to skip confirmation prompts in CI
+      id-token: write
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
 
   create-release:
     name: Create GitHub Release
