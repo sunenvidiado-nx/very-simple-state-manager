@@ -60,7 +60,7 @@ void main() {
       test('should notify listeners when state changes', () {
         int callCount = 0;
         int? lastValue;
-        
+
         manager.addListener((value) {
           callCount++;
           lastValue = value;
@@ -78,20 +78,21 @@ void main() {
       test('should not notify removed listeners', () {
         int callCount = 0;
         void listener(int value) => callCount++;
-        
+
         manager.addListener(listener);
         manager.increment();
         expect(callCount, equals(1));
 
         manager.removeListener(listener);
         manager.increment();
-        expect(callCount, equals(1), reason: 'Listener should not be called after removal');
+        expect(callCount, equals(1),
+            reason: 'Listener should not be called after removal');
       });
 
       test('should handle multiple listeners', () {
         int callCount1 = 0;
         int callCount2 = 0;
-        
+
         manager.addListener((_) => callCount1++);
         manager.addListener((_) => callCount2++);
 

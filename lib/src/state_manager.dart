@@ -39,6 +39,7 @@ abstract class StateManager<T> {
     void wrappedListener() {
       listener(state);
     }
+
     _wrappedListeners[listener] = wrappedListener;
     notifier.addListener(wrappedListener);
   }
