@@ -4,7 +4,8 @@ version: 1.1.0
 repository: https://github.com/sunenvidiado-nx/very-simple-state-manager
 
 environment:
-  sdk: ">=3.0.0"
+  sdk: ^3.0.0
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
