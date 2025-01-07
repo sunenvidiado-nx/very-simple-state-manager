@@ -2,6 +2,8 @@
 
 [![Tests](https://github.com/sunenvidiado-nx/very-simple-state-manager/actions/workflows/test.yaml/badge.svg)](https://github.com/sunenvidiado-nx/very-simple-state-manager/actions/workflows/test.yaml)
 [![codecov](https://codecov.io/gh/sunenvidiado-nx/very-simple-state-manager/branch/main/graph/badge.svg)](https://codecov.io/gh/sunenvidiado-nx/very-simple-state-manager)
+[![Pub Version](https://img.shields.io/pub/v/very_simple_state_manager)](https://pub.dev/packages/very_simple_state_manager)
+
 
 Yeah, I know - another state management solution. But this one? It's refreshingly simple! 🌟
 
