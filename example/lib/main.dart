@@ -45,7 +45,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _counterManager = CounterManager();
+    _counterManager = CounterManager()
+      ..addListener((newState) {
+        // Add a listener to track state changes
+        debugPrint('New state: $newState');
+      });
   }
 
   @override

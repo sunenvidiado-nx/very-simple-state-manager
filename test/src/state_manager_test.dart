@@ -55,5 +55,50 @@ void main() {
         expect(manager.notifier.value, equals(manager.state));
       });
     });
+
+    group('Listener functionality', () {
+      test('should notify listeners when state changes', () {
+        int callCount = 0;
+        int? lastValue;
+        
+        manager.addListener((value) {
+          callCount++;
+          lastValue = value;
+        });
+
+        manager.increment();
+        expect(callCount, equals(1));
+        expect(lastValue, equals(1));
+
+        manager.setValue(5);
+        expect(callCount, equals(2));
+        expect(lastValue, equals(5));
+      });
+
+      test('should not notify removed listeners', () {
+        int callCount = 0;
+        void listener(int value) => callCount++;
+        
+        manager.addListener(listener);
+        manager.increment();
+        expect(callCount, equals(1));
+
+        manager.removeListener(listener);
+        manager.increment();
+        expect(callCount, equals(1), reason: 'Listener should not be called after removal');
+      });
+
+      test('should handle multiple listeners', () {
+        int callCount1 = 0;
+        int callCount2 = 0;
+        
+        manager.addListener((_) => callCount1++);
+        manager.addListener((_) => callCount2++);
+
+        manager.increment();
+        expect(callCount1, equals(1));
+        expect(callCount2, equals(1));
+      });
+    });
   });
 }
