@@ -20,14 +20,17 @@ jobs:
         id: changelog
         shell: bash
         run: |
-          LATEST_VERSION=$(grep -m1 "^## \[" CHANGELOG.md | sed -E 's/## \[(.*)\].*/\1/')
+          LATEST_VERSION=$(grep -m1 "^## \[" CHANGELOG.md | sed -E 's/## \[(.*?)\].*/\1/')
           if [ -z "$LATEST_VERSION" ]; then
             echo "No version found in CHANGELOG.md"
             exit 1
           fi
 
+          # Escape + in version for awk pattern
+          LATEST_VERSION_ESCAPED=$(echo "$LATEST_VERSION" | sed 's/[+]/\\+/g')
+
           # Extract content between the current and the next version or until the end of the file
-          CHANGELOG_CONTENT=$(awk "/^## \[$LATEST_VERSION\]/ {flag=1; next} /^## \[/ {flag=0} flag {print}" CHANGELOG.md)
+          CHANGELOG_CONTENT=$(awk "/^## \[$LATEST_VERSION_ESCAPED\]/ {flag=1; next} /^## \[/ {flag=0} flag {print}" CHANGELOG.md)
 
           if [ -z "$CHANGELOG_CONTENT" ]; then
             echo "No changelog content found for version $LATEST_VERSION"
