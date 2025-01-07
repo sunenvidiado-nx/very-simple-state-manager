@@ -6,8 +6,28 @@ on:
       - "*"
 
 jobs:
+  publish:
+    name: Publish to pub.dev
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Required for authentication to pub.dev
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.0.0 # Match version from test workflow
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Publish to pub.dev
+        run: flutter pub publish --force # --force to skip confirmation prompts in CI
+
   create-release:
-    name: Create Release
+    name: Create GitHub Release
+    needs: publish
     runs-on: ubuntu-latest
     permissions:
       contents: write
