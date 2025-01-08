@@ -54,7 +54,11 @@ class CounterManager extends StateManager<int> {
 
 ### 2. Use It In Your UI
 
-Connect your state to the UI with `StateBuilder`:
+There are three ways to use state managers in your UI:
+
+#### Option 1: StateBuilder
+
+The most basic way to connect state to UI:
 
 ```dart
 class CounterWidget extends StatefulWidget {
@@ -88,6 +92,65 @@ class _CounterWidgetState extends State<CounterWidget> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _counter.increment,
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
+```
+
+#### Option 2: ManagedWidget
+
+A simpler way that handles state manager lifecycle automatically:
+
+```dart
+class CounterWidget extends ManagedWidget<CounterManager, int> {
+  @override
+  CounterManager createStateManager() => CounterManager();
+
+  @override
+  Widget build(BuildContext context, int state) {
+    return Scaffold(
+      body: Center(
+        child: Text('Count: $state'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: stateManager.increment,
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
+```
+
+#### Option 3: ManagedStatefulWidget
+
+When you need both state management and StatefulWidget capabilities:
+
+```dart
+class CounterWidget extends ManagedStatefulWidget<CounterManager, int> {
+  const CounterWidget({super.key});
+
+  @override
+  CounterManager createStateManager() => CounterManager();
+
+  @override
+  State<CounterWidget> createState() => _CounterWidgetState();
+}
+
+class _CounterWidgetState extends ManagedState<CounterManager, int, CounterWidget> {
+  void _handleIncrement() {
+    stateManager.increment(); // Access state manager directly!
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text('Count: $state'), // Access state through getter
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _handleIncrement,
         child: Icon(Icons.add),
       ),
     );

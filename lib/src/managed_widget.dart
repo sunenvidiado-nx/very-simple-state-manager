@@ -4,25 +4,29 @@ import 'state_builder.dart';
 import 'state_manager.dart';
 
 /// {@template managed_widget}
-/// An abstract widget that manages its own state through a [StateManager].
-/// The state manager is created lazily and cached for subsequent builds.
+/// A widget that automatically manages its state through a [StateManager].
+/// Creates and disposes its state manager based on the widget's lifecycle.
 ///
-/// Usage:
+/// Features:
+/// - Auto-rebuilds on state changes
+/// - Handles manager lifecycle
+/// - Configurable auto-disposal (via [autoDispose] flag)
+///
+/// Example:
 /// ```dart
-/// class CounterWidget extends ManagedWidget<CounterManager> {
+/// class CounterWidget extends ManagedWidget {
 ///   const CounterWidget({super.key});
 ///
 ///   @override
 ///   CounterManager createStateManager() => CounterManager();
 ///
 ///   @override
-///   Widget build(BuildContext context, CounterManager manager, dynamic state) {
-///     return Text('Counter: $state');
-///   }
+///   Widget build(context, state) => Text('Count: $state');
 /// }
 /// ```
 /// {@endtemplate}
-abstract class ManagedWidget<T extends StateManager> extends StatelessWidget {
+abstract class ManagedWidget<M extends StateManager<S>, S>
+    extends StatefulWidget {
   /// {@macro managed_widget}
   const ManagedWidget({
     super.key,
@@ -32,41 +36,38 @@ abstract class ManagedWidget<T extends StateManager> extends StatelessWidget {
   /// Whether to automatically dispose the state manager when the widget is removed.
   final bool autoDispose;
 
-  /// Cache for the state manager instance
-  static final Map<Type, StateManager> _cache = {};
-
   /// Creates a new instance of the state manager.
   /// This method should be implemented by subclasses.
-  T createStateManager();
-
-  /// Gets or creates the state manager instance.
-  T _getOrCreateStateManager() {
-    if (!_cache.containsKey(T)) {
-      _cache[T] = createStateManager();
-    }
-    return _cache[T]! as T;
-  }
+  M createStateManager();
 
   /// Builds the widget with the current state.
-  Widget build(BuildContext context, T manager, dynamic state);
+  Widget build(BuildContext context, S state);
+
+  @override
+  State<ManagedWidget<M, S>> createState() => _ManagedWidgetState<M, S>();
+}
+
+class _ManagedWidgetState<M extends StateManager<S>, S>
+    extends State<ManagedWidget<M, S>> {
+  late final M _manager;
+
+  @override
+  void initState() {
+    _manager = widget.createStateManager();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (widget.autoDispose) _manager.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final manager = _getOrCreateStateManager();
-
-    if (autoDispose) {
-      // Add dispose callback when the widget is removed from the tree
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!context.mounted) {
-          _cache.remove(T);
-          manager.dispose();
-        }
-      });
-    }
-
-    return StateBuilder(
-      stateManager: manager,
-      builder: (context, state) => build(context, manager, state),
+    return StateBuilder<S>(
+      stateManager: _manager,
+      builder: (context, state) => widget.build(context, state),
     );
   }
 }
