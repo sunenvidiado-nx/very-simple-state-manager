@@ -3,32 +3,21 @@
 [![Tests](https://github.com/sunenvidiado-nx/very-simple-state-manager/actions/workflows/test.yaml/badge.svg)](https://github.com/sunenvidiado-nx/very-simple-state-manager/actions/workflows/test.yaml)
 [![codecov](https://codecov.io/gh/sunenvidiado-nx/very-simple-state-manager/branch/main/graph/badge.svg)](https://codecov.io/gh/sunenvidiado-nx/very-simple-state-manager)
 [![Pub Version](https://img.shields.io/pub/v/very_simple_state_manager)](https://pub.dev/packages/very_simple_state_manager)
+[![License](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/sunenvidiado-nx/very-simple-state-manager/main/LICENSE)
 
 
 Yep, another Flutter state management solution - but hear me out, this one's refreshingly simple! ✨
 
-Built on Flutter's fundamentals, this lightweight solution combines the best of BLoC's structure, ChangeNotifier's simplicity, and Riverpod's state-aware widgets into one clean, fuss-free API.
+## 🔍 How It Works
 
-## ✨ Features
+This state manager integrates Flutter's core components with BLoC's architecture, `ChangeNotifier`'s simplicity, and Riverpod's state-aware capabilities.
 
-- **Simplicity**: Designed for quick adoption and ease of use
-- **Reactive Updates**: Automatic UI synchronization with state changes
-- **Clean Architecture**: Clear separation between state logic and UI
-- **Performance**: Leverages Flutter's efficient `ValueNotifier` system
-- **Lightweight**: Zero external dependencies
+Features:
 
-## 🔍 Under the Hood
-
-Why reinvent the wheel when Flutter already provides great building blocks? We take Flutter's built-in state management concepts and wrap them in a developer-friendly API:
-
-- `ValueNotifier`: Think of it as a smart box that tells everyone when its contents change
-- `ValueListenableBuilder`: The messenger that tells your UI when to update
-
-Instead of using these directly, we wrap them in two intuitive classes:
-- `StateManager`: A clean wrapper around `ValueNotifier` that makes state updates a breeze
-- `StateBuilder`: A smarter version of `ValueListenableBuilder` that makes UI updates dead simple
-- `ManagedWidget`: A stateless widget that automatically updates its UI based on state changes
-- `ManagedStatefulWidget`: A stateful widget that automatically updates its UI and state based on state changes
+- Simple: Easy to grasp and implement (hence the name!)
+- Reactive: UI updates automatically with state changes
+- Clean: Keeps logic and UI separate for better code organization
+- Dependency-Free: Zero external packages—powered by Flutter's `ValueNotifier` and `ValueListenableBuilder`
 
 ## 🚀 Getting Started
 
@@ -56,11 +45,11 @@ class CounterManager extends StateManager<int> {
 
 ### 2. Use It In Your UI
 
-There are three ways to use state managers in your UI:
+There are three ways to make your UI responsive to state changes:
 
-#### Option 1: StateBuilder
+#### Option 1: `StateBuilder`
 
-The most basic way to connect state to UI:
+The easiest way to react to state changes:
 
 ```dart
 class CounterWidget extends StatefulWidget {
@@ -79,7 +68,7 @@ class _CounterWidgetState extends State<CounterWidget> {
 
   @override
   void dispose() {
-    _counter.dispose(); // Don't forget to dispose state managers 🧹
+    _counter.dispose(); // Don't forget to dispose state managers 
     super.dispose();
   }
 
@@ -101,9 +90,9 @@ class _CounterWidgetState extends State<CounterWidget> {
 }
 ```
 
-#### Option 2: ManagedWidget
+#### Option 2: `ManagedWidget`
 
-A simpler way that rebuilds on state changes automatically:
+An alternative to `StatelessWidget` that automatically rebuilds on state changes:
 
 ```dart
 class CounterWidget extends ManagedWidget<CounterManager, int> {
@@ -125,9 +114,9 @@ class CounterWidget extends ManagedWidget<CounterManager, int> {
 }
 ```
 
-#### Option 3: ManagedStatefulWidget
+#### Option 3: `ManagedStatefulWidget`
 
-When you need both stateful widget capabilities and auto-rebuilds on state changes:
+When you need `StatefulWidget` capabilities and auto-rebuilds on state changes:
 
 ```dart
 class CounterWidget extends ManagedStatefulWidget<CounterManager, int> {
@@ -162,7 +151,7 @@ class _CounterWidgetState extends ManagedState<CounterManager, int, CounterWidge
 
 ### 3. Simple Yet Powerful 💪
 
-Handle complex state management with clean, maintainable code:
+Handle complex state management with clean, maintainable code!
 
 ```dart
 class UserManager extends StateManager<UserState> {
@@ -184,6 +173,8 @@ class UserManager extends StateManager<UserState> {
   void updateName(String newName) {
     state = LoadedUserState(state.user.copyWith(name: newName));
   }
+
+  // Other complex state management logic ...
 }
 ```
 
@@ -192,8 +183,14 @@ class UserManager extends StateManager<UserState> {
 1. **Resource Management**: Always dispose state managers to prevent memory leaks
 2. **Single Responsibility**: Each state manager should handle one logical unit of state
 3. **Immutability**: Treat state as immutable to prevent unintended side effects
-4. **Type Safety**: Leverage Dart's type system for better maintainability
-5. **Useful widgets**: Use [ManagedWidget] and [ManagedStatefulWidget] for easier auto-rebuilds
+4. **Type Safety**: Use generic types with your state managers for better compile-time checks
+5. **Widget Choice**: Pick the right widget for your needs:
+   - Use `StateBuilder` for simple state-to-UI bindings
+   - Use `ManagedWidget` for stateless widgets that need state
+   - Use `ManagedStatefulWidget` when you need both state and lifecycle methods
+6. **Error Handling**: Always handle error states in your state managers (like in the `UserManager` example)
+7. **Code Organization**: Keep your state managers and widgets organized in separate files or folders
+8. **Testing**: Write tests for your state managers and widgets to ensure they work as expected
 
 ## 🎯 Examples
 
@@ -201,7 +198,7 @@ Check out the `/example` directory for practical demonstrations and usage patter
 
 ## 🤝 Contributing
 
-We welcome contributions! Feel free to submit issues and pull requests.
+Contributions are welcome! Feel free to submit issues and pull requests.
 
 ## 📄 License
 
