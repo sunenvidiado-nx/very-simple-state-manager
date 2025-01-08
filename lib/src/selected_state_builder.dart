@@ -70,17 +70,18 @@ class _SelectedStateBuilderState<M extends StateManager<T>, T, S>
     extends State<SelectedStateBuilder<M, T, S>> {
   late S _selectedState;
   late M _stateManager;
+  late S _newSelectedState; // Cache the new state during _shouldRebuild
 
   bool get _shouldRebuild {
     try {
-      final newSelectedState = widget.selector(_stateManager.state);
+      _newSelectedState = widget.selector(_stateManager.state);
       if (widget.equals != null) {
-        return !widget.equals!(_selectedState, newSelectedState);
+        return !widget.equals!(_selectedState, _newSelectedState);
       }
-      return _selectedState != newSelectedState;
+      return _selectedState != _newSelectedState;
     } catch (e) {
-      // If selector throws, we should rebuild to show potential error state
-      return true;
+      debugPrint('Error in SelectedStateBuilder selector: $e');
+      rethrow;
     }
   }
 
@@ -88,8 +89,8 @@ class _SelectedStateBuilderState<M extends StateManager<T>, T, S>
     _stateManager = widget.stateManager;
     try {
       _selectedState = widget.selector(_stateManager.state);
+      _newSelectedState = _selectedState; // Initialize cache
     } catch (e) {
-      // Handle selector errors gracefully
       debugPrint('Error in SelectedStateBuilder selector: $e');
       rethrow;
     }
@@ -124,13 +125,8 @@ class _SelectedStateBuilderState<M extends StateManager<T>, T, S>
   void _onStateChanged(T state) {
     if (_shouldRebuild) {
       setState(() {
-        try {
-          _selectedState = widget.selector(state);
-        } catch (e) {
-          // Handle selector errors gracefully
-          debugPrint('Error in SelectedStateBuilder selector: $e');
-          rethrow;
-        }
+        // Use cached value from _shouldRebuild
+        _selectedState = _newSelectedState;
       });
     }
   }
