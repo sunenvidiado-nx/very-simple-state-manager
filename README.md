@@ -5,9 +5,9 @@
 [![Pub Version](https://img.shields.io/pub/v/very_simple_state_manager)](https://pub.dev/packages/very_simple_state_manager)
 
 
-Yeah, I know - another state management solution. But this one? It's refreshingly simple! 🌟
+Yep, another Flutter state management solution - but hear me out, this one's refreshingly simple! ✨
 
-A lightweight state management solution built on Flutter's core concepts. Taking inspiration from BLoC's structured approach and ChangeNotifier's simplicity, it provides a clean, effective API without unnecessary complexity.
+Built on Flutter's fundamentals, this lightweight solution combines the best of BLoC's structure, ChangeNotifier's simplicity, and Riverpod's state-aware widgets into one clean, fuss-free API.
 
 ## ✨ Features
 
@@ -27,6 +27,8 @@ Why reinvent the wheel when Flutter already provides great building blocks? We t
 Instead of using these directly, we wrap them in two intuitive classes:
 - `StateManager`: A clean wrapper around `ValueNotifier` that makes state updates a breeze
 - `StateBuilder`: A smarter version of `ValueListenableBuilder` that makes UI updates dead simple
+- `ManagedWidget`: A stateless widget that automatically updates its UI based on state changes
+- `ManagedStatefulWidget`: A stateful widget that automatically updates its UI and state based on state changes
 
 ## 🚀 Getting Started
 
@@ -101,7 +103,7 @@ class _CounterWidgetState extends State<CounterWidget> {
 
 #### Option 2: ManagedWidget
 
-A simpler way that handles state manager lifecycle automatically:
+A simpler way that rebuilds on state changes automatically:
 
 ```dart
 class CounterWidget extends ManagedWidget<CounterManager, int> {
@@ -109,7 +111,7 @@ class CounterWidget extends ManagedWidget<CounterManager, int> {
   CounterManager createStateManager() => CounterManager();
 
   @override
-  Widget build(BuildContext context, int state) {
+  Widget build(BuildContext context, int state) { // Access state here!
     return Scaffold(
       body: Center(
         child: Text('Count: $state'),
@@ -125,7 +127,7 @@ class CounterWidget extends ManagedWidget<CounterManager, int> {
 
 #### Option 3: ManagedStatefulWidget
 
-When you need both state management and StatefulWidget capabilities:
+When you need both stateful widget capabilities and auto-rebuilds on state changes:
 
 ```dart
 class CounterWidget extends ManagedStatefulWidget<CounterManager, int> {
@@ -147,7 +149,7 @@ class _CounterWidgetState extends ManagedState<CounterManager, int, CounterWidge
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('Count: $state'), // Access state through getter
+        child: Text('Count: $state'), // Access state directly!
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _handleIncrement,
@@ -191,6 +193,7 @@ class UserManager extends StateManager<UserState> {
 2. **Single Responsibility**: Each state manager should handle one logical unit of state
 3. **Immutability**: Treat state as immutable to prevent unintended side effects
 4. **Type Safety**: Leverage Dart's type system for better maintainability
+5. **Useful widgets**: Use [ManagedWidget] and [ManagedStatefulWidget] for easier auto-rebuilds
 
 ## 🎯 Examples
 
