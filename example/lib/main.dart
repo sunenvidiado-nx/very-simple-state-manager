@@ -1,14 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:very_simple_state_manager/very_simple_state_manager.dart';
-
-/// Manages the counter state for the app
-class CounterManager extends StateManager<int> {
-  CounterManager() : super(0);
-
-  void increment() {
-    state = state + 1;
-  }
-}
 
 void main() {
   runApp(const MyApp());
@@ -25,65 +15,26 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Very Simple State Manager Demo'),
+      home: const HomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  late final CounterManager _counterManager;
-
-  @override
-  void initState() {
-    super.initState();
-    _counterManager = CounterManager()
-      ..addListener((newState) {
-        // Add a listener to track state changes
-        debugPrint('New state: $newState');
-      });
-  }
-
-  @override
-  void dispose() {
-    _counterManager.dispose();
-    super.dispose();
-  }
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+    return const Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('You have pushed the button this many times:'),
-            StateBuilder(
-              stateManager: _counterManager,
-              builder: (context, count) => Text(
-                '$count',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ),
-          ],
+        child: Text(
+          'Please run one of the example main files:\n\n'
+          '- state_builder_main.dart\n'
+          '- managed_widget_main.dart\n'
+          '- managed_stateful_widget_main.dart',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 16),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _counterManager.increment,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
