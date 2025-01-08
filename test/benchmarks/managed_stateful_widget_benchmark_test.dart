@@ -77,8 +77,8 @@ ManagedStatefulWidget Lifecycle Performance:
         final avgMicros = await measureExecutionTime(() async {
           final state = tester.state<TestManagedStatefulWidgetState>(
               find.byType(TestManagedStatefulWidget));
-          state.widget.stateManager.updateCount(
-              state.widget.stateManager.state.count + 1);
+          state.widget.stateManager
+              .updateCount(state.widget.stateManager.state.count + 1);
           await tester.pump();
         });
 
@@ -159,15 +159,15 @@ ManagedStatefulWidget State Preservation:
         final avgMicros = await measureExecutionTime(() async {
           final state = tester.state<TestManagedStatefulWidgetState>(
               find.byType(TestManagedStatefulWidget));
-          
+
           // Simulate concurrent updates
-          state.widget.stateManager.updateCount(
-              state.widget.stateManager.state.count + 1);
-          state.widget.stateManager.updateCount(
-              state.widget.stateManager.state.count + 2);
-          state.widget.stateManager.updateCount(
-              state.widget.stateManager.state.count + 3);
-          
+          state.widget.stateManager
+              .updateCount(state.widget.stateManager.state.count + 1);
+          state.widget.stateManager
+              .updateCount(state.widget.stateManager.state.count + 2);
+          state.widget.stateManager
+              .updateCount(state.widget.stateManager.state.count + 3);
+
           await tester.pump();
           await tester.pump(const Duration(milliseconds: 16)); // One frame
         });

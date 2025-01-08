@@ -65,8 +65,8 @@ ManagedWidget Initialization Performance:
         final avgMicros = await measureExecutionTime(() async {
           final element = tester.element(find.byType(TestManagedWidget));
           final managedWidget = element.widget as TestManagedWidget;
-          managedWidget._stateManager.updateCount(
-              managedWidget._stateManager.state.count + 1);
+          managedWidget._stateManager
+              .updateCount(managedWidget._stateManager.state.count + 1);
           await tester.pump();
         });
 
@@ -144,7 +144,8 @@ ManagedWidget Parent Rebuild Performance:
           final elements = tester.elementList(find.byType(TestManagedWidget));
           for (final element in elements) {
             final widget = element.widget as TestManagedWidget;
-            widget._stateManager.updateCount(widget._stateManager.state.count + 1);
+            widget._stateManager
+                .updateCount(widget._stateManager.state.count + 1);
           }
           await tester.pump();
         });

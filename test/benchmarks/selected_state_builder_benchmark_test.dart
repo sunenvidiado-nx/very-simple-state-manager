@@ -31,7 +31,7 @@ void main() {
       'should have optimal performance with simple value comparison',
       (tester) async {
         int selectorCallCount = 0;
-        
+
         final widget = MaterialApp(
           home: SelectedStateBuilder<TestStateManager, TestState, int>(
             stateManager: stateManager,
@@ -66,7 +66,8 @@ Performance Results (Simple Value):
         int equalsCallCount = 0;
 
         final widget = MaterialApp(
-          home: SelectedStateBuilder<TestStateManager, TestState, ComplexObject>(
+          home:
+              SelectedStateBuilder<TestStateManager, TestState, ComplexObject>(
             stateManager: stateManager,
             selector: (state) {
               selectorCallCount++;
