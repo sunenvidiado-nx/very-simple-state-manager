@@ -32,10 +32,10 @@ import 'state_manager.dart';
 ///
 ///   @override
 ///   Widget build(BuildContext context) {
-///     // Access current state through currentState property
+///     // Access current state through state property
 ///     return Column(
 ///       children: [
-///         Text('Counter: ${currentState}'),
+///         Text('Counter: ${state}'),
 ///         ElevatedButton(
 ///           onPressed: _handleIncrement,
 ///           child: Text('Increment'),
@@ -71,8 +71,8 @@ abstract class ManagedState<M extends StateManager<S>, S,
 
   @override
   void initState() {
-    _manager = widget.createStateManager();
     super.initState();
+    _manager = widget.createStateManager();
     _manager.addListener(_handleStateChange);
   }
 
@@ -89,8 +89,14 @@ abstract class ManagedState<M extends StateManager<S>, S,
   }
 
   /// The current state manager instance.
+  /// Use this to access state manager methods and properties.
+  @protected
+  @visibleForTesting
   M get stateManager => _manager;
 
   /// The current state value.
+  /// This is a convenience getter that returns the current state from the state manager.
+  @protected
+  @visibleForTesting
   S get state => _manager.state;
 }

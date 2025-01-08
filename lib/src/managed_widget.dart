@@ -53,8 +53,8 @@ class _ManagedWidgetState<M extends StateManager<S>, S>
 
   @override
   void initState() {
-    _manager = widget.createStateManager();
     super.initState();
+    _manager = widget.createStateManager();
   }
 
   @override
