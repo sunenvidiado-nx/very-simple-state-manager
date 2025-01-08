@@ -222,6 +222,16 @@ class UserManager extends StateManager<UserState> {
 }
 ```
 
+## ⚡ Performance
+
+Basic benchmarks show that being simple doesn't mean being slow! While these aren't scientific benchmarks, they demonstrate that this state manager:
+
+- Starts up quickly
+- Updates smoothly, even with nested widgets
+- Uses minimal memory (zero dependencies!)
+
+The benchmarks are just for reference - real app performance will vary based on usage. Check out the `/test/benchmarks` directory if you want to see the actual numbers! 🔬
+
 ## 💡 Best Practices
 
 1. **Resource Management**: Always dispose state managers to prevent memory leaks
