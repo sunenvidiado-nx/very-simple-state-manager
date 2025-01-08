@@ -30,6 +30,7 @@ class HomePage extends StatelessWidget {
         child: Text(
           'Please run one of the example main files:\n\n'
           '- state_builder_main.dart\n'
+          '- selected_state_builder_main.dart\n'
           '- managed_widget_main.dart\n'
           '- managed_stateful_widget_main.dart',
           textAlign: TextAlign.center,
