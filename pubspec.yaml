@@ -1,6 +1,6 @@
 name: very_simple_state_manager
 description: Very Simple State Manager is a lightweight Flutter state solution - it's in the name itself!
-version: 1.3.0
+version: 1.3.0+1
 repository: https://github.com/sunenvidiado-nx/very-simple-state-manager
 
 environment:
