@@ -45,7 +45,7 @@ class CounterManager extends StateManager<int> {
 
 ### 2. Use It In Your UI
 
-There are three ways to make your UI responsive to state changes:
+There are four ways to make your UI responsive to state changes:
 
 #### Option 1: `StateBuilder`
 
@@ -149,6 +149,50 @@ class _CounterWidgetState extends ManagedState<CounterManager, int, CounterWidge
 }
 ```
 
+#### Option 4: `SelectedStateBuilder`
+
+When you only need to rebuild based on a selected part of the state:
+
+```dart
+class ComplexCounterManager extends StateManager<CounterState> {
+  ComplexCounterManager() : super(CounterState(count: 0, lastUpdated: DateTime.now()));
+
+  void increment() {
+    state = CounterState(count: state.count + 1, lastUpdated: DateTime.now());
+  }
+}
+
+class CounterWidget extends StatelessWidget {
+  final ComplexCounterManager _counter = ComplexCounterManager();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          // Only rebuilds when count changes
+          SelectedStateBuilder(
+            stateManager: _counter,
+            selector: (state) => state.count,
+            builder: (context, count) => Text('Count: $count'),
+          ),
+          // Only rebuilds when lastUpdated changes
+          SelectedStateBuilder(
+            stateManager: _counter,
+            selector: (state) => state.lastUpdated,
+            builder: (context, lastUpdated) => Text('Last Updated: $lastUpdated'),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _counter.increment,
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
+```
+
 ### 3. Simple Yet Powerful 💪
 
 Handle complex state management with clean, maintainable code!
@@ -188,6 +232,7 @@ class UserManager extends StateManager<UserState> {
    - Use `StateBuilder` for simple state-to-UI bindings
    - Use `ManagedWidget` for stateless widgets that need state
    - Use `ManagedStatefulWidget` when you need both state and lifecycle methods
+   - Use `SelectedStateBuilder` when you only need to rebuild based on a selected part of the state
 6. **Error Handling**: Always handle error states in your state managers (like in the `UserManager` example)
 7. **Code Organization**: Keep your state managers and widgets organized in separate files or folders
 8. **Testing**: Write tests for your state managers and widgets to ensure they work as expected
