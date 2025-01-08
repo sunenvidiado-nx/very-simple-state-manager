@@ -95,6 +95,233 @@ void main() {
 
       expect(find.text('null'), findsOneWidget);
     });
+
+    testWidgets(
+      'should use custom equals function when provided',
+      (tester) async {
+        int buildCount = 0;
+        bool equalsWasCalled = false;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: SelectedStateBuilder<TestStateManager, TestState, String>(
+              stateManager: stateManager,
+              selector: (state) => state.name,
+              equals: (prev, next) {
+                equalsWasCalled = true;
+                return prev.toLowerCase() == next.toLowerCase();
+              },
+              builder: (context, name) {
+                buildCount++;
+                return Text(name);
+              },
+            ),
+          ),
+        );
+
+        expect(buildCount, 1);
+        expect(equalsWasCalled, false); // Not called on first build
+        expect(find.text('initial'), findsOneWidget);
+
+        // Update with same value but different case
+        stateManager.updateName('INITIAL');
+        await tester.pump();
+
+        expect(equalsWasCalled, true);
+        expect(buildCount, 1); // Should not rebuild due to custom equals
+        expect(find.text('initial'),
+            findsOneWidget); // Should still show old value since we didn't rebuild
+      },
+    );
+
+    testWidgets('should handle errors in selector gracefully', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SelectedStateBuilder<TestStateManager, TestState, String>(
+            stateManager: stateManager,
+            selector: (state) {
+              throw Exception('Selector error');
+            },
+            builder: (context, name) => Text(name),
+          ),
+        ),
+      );
+
+      expect(tester.takeException(), isInstanceOf<Exception>());
+    });
+
+    testWidgets('should handle state manager updates correctly',
+        (tester) async {
+      final secondStateManager = TestStateManager();
+      secondStateManager.updateName('second');
+
+      final widget = MaterialApp(
+        home: SelectedStateBuilder<TestStateManager, TestState, String>(
+          stateManager: stateManager,
+          selector: (state) => state.name,
+          builder: (context, name) => Text(name),
+        ),
+      );
+
+      await tester.pumpWidget(widget);
+      expect(find.text('initial'), findsOneWidget);
+
+      // Update widget with new state manager
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SelectedStateBuilder<TestStateManager, TestState, String>(
+            stateManager: secondStateManager,
+            selector: (state) => state.name,
+            builder: (context, name) => Text(name),
+          ),
+        ),
+      );
+
+      expect(find.text('second'), findsOneWidget);
+    });
+
+    testWidgets('should handle builder errors gracefully', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SelectedStateBuilder<TestStateManager, TestState, String>(
+            stateManager: stateManager,
+            selector: (state) => state.name,
+            builder: (context, name) {
+              throw Exception('Builder error');
+            },
+          ),
+        ),
+      );
+
+      expect(
+        find.byWidgetPredicate(
+          (widget) =>
+              widget is ErrorWidget &&
+              widget.message.contains(
+                'Error building SelectedStateBuilder: Exception: Builder error',
+              ),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets(
+      'should handle selector errors during state change',
+      (tester) async {
+        final key = GlobalKey();
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: SelectedStateBuilder<TestStateManager, TestState, String>(
+              key: key,
+              stateManager: stateManager,
+              selector: (state) => state.name,
+              builder: (context, name) => Text(name),
+            ),
+          ),
+        );
+
+        expect(find.text('initial'), findsOneWidget);
+
+        // Replace selector with one that throws
+        await tester.pumpWidget(
+          MaterialApp(
+            home: SelectedStateBuilder<TestStateManager, TestState, String>(
+              key: key,
+              stateManager: stateManager,
+              selector: (state) {
+                if (state.name != 'initial') {
+                  throw Exception('Selector error during update');
+                }
+                return state.name;
+              },
+              builder: (context, name) => Text(name),
+            ),
+          ),
+        );
+
+        // Trigger state change and expect error
+        stateManager.updateName('new name');
+        await tester.pumpAndSettle(const Duration(milliseconds: 100));
+
+        final dynamic exception = tester.takeException();
+        expect(exception, isInstanceOf<Exception>());
+        expect(exception.toString(), contains('Selector error during update'));
+      },
+    );
+
+    testWidgets('should handle errors in onStateChanged', (tester) async {
+      final key = GlobalKey();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SelectedStateBuilder<TestStateManager, TestState, String>(
+            key: key,
+            stateManager: stateManager,
+            selector: (state) => state.name,
+            builder: (context, name) => Text(name),
+          ),
+        ),
+      );
+
+      expect(find.text('initial'), findsOneWidget);
+
+      // Replace selector with one that throws
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SelectedStateBuilder<TestStateManager, TestState, String>(
+            key: key,
+            stateManager: stateManager,
+            selector: (state) {
+              if (state.name != 'initial') {
+                throw Exception('Selector error in onStateChanged');
+              }
+              return state.name;
+            },
+            builder: (context, name) => Text(name),
+          ),
+        ),
+      );
+
+      // Trigger state change and expect error
+      stateManager.updateName('new name');
+      await tester.pumpAndSettle(const Duration(milliseconds: 100));
+
+      final dynamic exception = tester.takeException();
+      expect(exception, isInstanceOf<Exception>());
+      expect(
+          exception.toString(), contains('Selector error in onStateChanged'));
+    });
+
+    testWidgets('should rebuild when selector throws', (tester) async {
+      bool shouldThrow = false;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: SelectedStateBuilder<TestStateManager, TestState, String>(
+            stateManager: stateManager,
+            selector: (state) {
+              if (shouldThrow) {
+                throw Exception('Selector error');
+              }
+              return state.name;
+            },
+            builder: (context, name) => Text(name),
+          ),
+        ),
+      );
+
+      expect(find.text('initial'), findsOneWidget);
+
+      // Make selector throw and trigger rebuild
+      shouldThrow = true;
+      stateManager.updateName('new name');
+      await tester.pumpAndSettle(const Duration(milliseconds: 100));
+
+      final dynamic exception = tester.takeException();
+      expect(exception, isInstanceOf<Exception>());
+      expect(exception.toString(), contains('Selector error'));
+    });
   });
 }
 
