@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+/// {@template state_manager}
 /// Base class for state managers.
 ///
 /// Usage:
@@ -12,6 +13,7 @@ import 'package:flutter/foundation.dart';
 ///   }
 /// }
 /// ```
+/// {@endtemplate}
 abstract class StateManager<T> {
   /// The state notifier that will be used to manage the state.
   final ValueNotifier<T> _notifier;
@@ -19,7 +21,7 @@ abstract class StateManager<T> {
   /// Maps original listeners to their wrapped versions
   final Map<void Function(T), VoidCallback> _wrappedListeners = {};
 
-  /// Constructor that initializes the notifier with an initial state.
+  // {@macro state_manager}
   @protected
   StateManager(T initialState) : _notifier = ValueNotifier(initialState);
 
