@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../very_simple_state_manager.dart';
+import 'state_manager.dart';
 
 /// {@template state_builder}
 ///
@@ -47,7 +47,7 @@ class StateBuilder<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<T>(
-      valueListenable: stateManager.notifier,
+      valueListenable: stateManager.valueListenable,
       builder: (context, value, _) => builder(context, value),
     );
   }

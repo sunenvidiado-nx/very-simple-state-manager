@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:very_simple_state_manager/very_simple_state_manager.dart';
+import 'package:very_simple_state_manager/src/state_manager.dart';
 
 class TestStateManager extends StateManager<int> {
   TestStateManager() : super(0);
@@ -52,7 +52,7 @@ void main() {
     group('Should maintain consistency', () {
       test('when checking notifier value against state', () {
         manager.increment();
-        expect(manager.notifier.value, equals(manager.state));
+        expect(manager.valueListenable.value, equals(manager.state));
       });
     });
 

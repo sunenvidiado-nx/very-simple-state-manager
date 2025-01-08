@@ -14,20 +14,20 @@ import 'package:flutter/foundation.dart';
 /// ```
 abstract class StateManager<T> {
   /// The state notifier that will be used to manage the state.
-  final ValueNotifier<T> notifier;
+  final ValueNotifier<T> _notifier;
 
   /// Maps original listeners to their wrapped versions
   final Map<void Function(T), VoidCallback> _wrappedListeners = {};
 
   /// Constructor that initializes the notifier with an initial state.
   @protected
-  StateManager(T initialState) : notifier = ValueNotifier(initialState);
+  StateManager(T initialState) : _notifier = ValueNotifier(initialState);
 
   /// Returns the current state of the state manager.
-  T get state => notifier.value;
+  T get state => _notifier.value;
 
   /// Sets the state of the state manager.
-  set state(T newState) => notifier.value = newState;
+  set state(T newState) => _notifier.value = newState;
 
   /// Adds a listener that will be called whenever the state changes.
   ///
@@ -41,7 +41,7 @@ abstract class StateManager<T> {
     }
 
     _wrappedListeners[listener] = wrappedListener;
-    notifier.addListener(wrappedListener);
+    _notifier.addListener(wrappedListener);
   }
 
   /// Removes a previously added listener.
@@ -50,7 +50,7 @@ abstract class StateManager<T> {
   void removeListener(void Function(T newState) listener) {
     final wrappedListener = _wrappedListeners.remove(listener);
     if (wrappedListener != null) {
-      notifier.removeListener(wrappedListener);
+      _notifier.removeListener(wrappedListener);
     }
   }
 
@@ -62,6 +62,10 @@ abstract class StateManager<T> {
   @mustCallSuper
   void dispose() {
     _wrappedListeners.clear();
-    notifier.dispose();
+    _notifier.dispose();
   }
+}
+
+extension StateManagerExtension<T> on StateManager<T> {
+  ValueNotifier<T> get valueListenable => _notifier;
 }
