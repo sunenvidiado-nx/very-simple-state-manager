@@ -3,6 +3,7 @@
 [![Tests](https://github.com/sunenvidiado-nx/very-simple-state-manager/actions/workflows/test.yaml/badge.svg)](https://github.com/sunenvidiado-nx/very-simple-state-manager/actions/workflows/test.yaml)
 [![codecov](https://codecov.io/gh/sunenvidiado-nx/very-simple-state-manager/branch/main/graph/badge.svg)](https://codecov.io/gh/sunenvidiado-nx/very-simple-state-manager)
 [![Pub Version](https://img.shields.io/pub/v/very_simple_state_manager)](https://pub.dev/packages/very_simple_state_manager)
+[![Awesome Flutter](https://img.shields.io/badge/Awesome-Flutter-52bdeb.svg?longCache=true)](https://github.com/Solido/awesome-flutter)
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/sunenvidiado-nx/very-simple-state-manager/main/LICENSE)
 
 
